@@ -1,6 +1,6 @@
 # Docker alpine image for opencv4nodejs
 
-Scripts to build image with nodejs, opencv, ffmpeg and opencv4nodejs.
+Scripts to build image with nodejs, opencv (3.4.x only), ffmpeg and opencv4nodejs.
 
 References: 
  - [justadudewhohacks/opencv4nodejs-docker-images](https://github.com/justadudewhohacks/opencv4nodejs-docker-images/tree/master/opencv-dlib-nodejs).
@@ -12,8 +12,8 @@ References:
 ./build.sh <NODE_VERSION> <OPENCV_VERSION> <DLIB_VERSION>
 ```
 
-Build OpenCV 4.2.0, node 10.18.1:
+Build OpenCV 3.4.1, node 10.18.1:
 
 ```$bash
-/build.sh 10.18.1 4.2.0
+/build.sh 10.18.1 3.4.1
 ```

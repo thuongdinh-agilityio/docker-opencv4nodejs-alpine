@@ -3,12 +3,13 @@ FROM mhart/alpine-node:${NODE_VERSION} as alpine-node
 
 ARG RUNTIME_DEPS='libpng-dev libjpeg-turbo libwebp tiff openexr jasper openblas libx11-dev zlib ffmpeg'
 ARG BUILD_DEPS='xz wget unzip cmake build-base python linux-headers libjpeg-turbo-dev libwebp-dev tiff-dev openexr-dev jasper-dev openblas-dev zlib-dev ffmpeg-dev'
-ARG OPENCV_VERSION=4.2.0
+ARG OPENCV_VERSION=3.4.1
 ARG LIB_PREFIX='/usr/local'
 
 ENV OPENCV_VERSION=${OPENCV_VERSION} \
     LIB_PREFIX=${LIB_PREFIX} \
     OPENCV4NODEJS_DISABLE_AUTOBUILD=1 \
+    OPENCV_BUILD_LIST='' \
     FFMPEG_PATH='/usr/bin/ffmpeg' \
     FFPROBE_PATH='/usr/bin/ffprobe'
 
@@ -30,6 +31,7 @@ RUN apk add -u --no-cache --virtual .build-dependencies $BUILD_DEPS \
 	-D BUILD_TESTS=OFF \
 	-D BUILD_PERF_TESTS=OFF \
 	-D BUILD_JAVA=OFF \
+	-D BUILD_EXAMPLES=OFF \
 	-D BUILD_opencv_apps=OFF \
 	-D BUILD_opencv_aruco=OFF \
 	-D BUILD_opencv_bgsegm=OFF \
@@ -40,6 +42,7 @@ RUN apk add -u --no-cache --virtual .build-dependencies $BUILD_DEPS \
 	-D BUILD_opencv_dpm=OFF \
 	-D BUILD_opencv_fuzzy=OFF \
 	-D BUILD_opencv_hfs=OFF \
+	-D BUILD_opencv_java=OFF \
 	-D BUILD_opencv_java_bindings_generator=OFF \
 	-D BUILD_opencv_js=OFF \
     -D BUILD_opencv_img_hash=OFF \
@@ -47,6 +50,7 @@ RUN apk add -u --no-cache --virtual .build-dependencies $BUILD_DEPS \
     -D BUILD_opencv_optflow=OFF \
     -D BUILD_opencv_phase_unwrapping=OFF \
 	-D BUILD_opencv_python3=OFF \
+    -D BUILD_opencv_python2=OFF \
 	-D BUILD_opencv_python_bindings_generator=OFF \
 	-D BUILD_opencv_reg=OFF \
 	-D BUILD_opencv_rgbd=OFF \
@@ -61,6 +65,9 @@ RUN apk add -u --no-cache --virtual .build-dependencies $BUILD_DEPS \
 	-D BUILD_opencv_xobjdetect=OFF \
 	-D BUILD_opencv_xphoto=OFF \
 	-D CMAKE_INSTALL_PREFIX=$LIB_PREFIX \
+    -D BUILD_ANDROID_EXAMPLES=OFF \
+    -D INSTALL_C_EXAMPLES=OFF \
+    -D INSTALL_PYTHON_EXAMPLES=OFF \
     -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules"
 
 RUN cd /opencv/opencv/build \
@@ -74,5 +81,8 @@ RUN cd /opencv/opencv/build \
     && rm -rf /var/cache/apk/* /usr/share/man /usr/local/share/man /tmp/*
 
 # Install opencv4nodejs
+
+ENV OPENCV_LIB_DIR=/usr/local/lib64
+
 RUN apk update && apk add -u --no-cache python make g++
 RUN npm i opencv4nodejs@5.5.0
